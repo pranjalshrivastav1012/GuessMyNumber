@@ -1,22 +1,17 @@
 import React, { Component } from 'react';
-
 import { Grid, Typography, Paper, Divider, Button } from '@material-ui/core';
 import { Form, Info, Progress  } from './components';
 import { getInitialState, getFeedback } from './util';
-
 import './App.css';
-
+var level = 1;
+var previousList = '';
 class App extends Component {
-    state = getInitialState();
-
-    resetGame = () => this.setState(getInitialState());
-
+    state = getInitialState(level);
+    resetGame = () => this.setState(getInitialState(level));
     updateAppState = (guess) => {
         const { actual } = this.state;
-
         const absDiff = Math.abs(guess - actual);
         const { feedbackMessage, feedbackColor } = getFeedback(absDiff);
-
         this.setState(prevState => ({
             guess,
             allGuesses: [...prevState.allGuesses, { guess, feedbackColor }],
@@ -25,34 +20,54 @@ class App extends Component {
             block: absDiff === 0,
         }));
     }
-
     render() {
         const { allGuesses, feedbackMessage, block, attempt, show } = this.state;
-
         const guessList = allGuesses.map((item, index) => (
-            <li key={index}>
-                <span>{item.guess}</span>
-            </li>
+            <span>{item.guess}, </span>
         ));
-
-        return (
-            <Grid style={{ height: '100vh' }} justify="center" alignItems="center" container>
-                <Grid item xs={3}>
-                    <Paper style={{ padding: '50px' }} elevation={6}>
-                        <Typography align="center" variant="h2" gutterBottom>Guess My Number</Typography>
-                        <Divider style={{ margin: '20px 0' }} />
-                        <div className={`feedback ${feedbackMessage[0].toLowerCase()}`}>
-                            <h2 className="feedback-text">{feedbackMessage}</h2>
-                        </div>
-                        <Form block={block} returnGuessToApp={value => this.updateAppState(value)} />
-                        <Progress feedbackMessage={feedbackMessage} attempt={attempt} guessList={guessList} />
-                        <Button style={{ marginBottom: '15px' }} fullWidth variant="contained" color="primary" onClick={this.resetGame}>Reset Game</Button>
-                        <Info show={show} onClose={this.handleClose} />
-                    </Paper>
+        if(feedbackMessage[0].toLowerCase() == 'p'){
+            previousList = previousList + 'Level ' + level + ' : ';
+            allGuesses.forEach(element => {
+                previousList += element.guess + ', ';
+            });
+            previousList = previousList.substring(0, previousList.length-2) + '\n';
+            level = level+1;
+            this.resetGame();
+            return (
+                <Grid style={{ height: '100vh' }} justify="center" alignItems="center" container>
+                    <Grid item xs={3}>
+                        <Paper style={{ padding: '50px' }} elevation={6}>
+                            <Typography align="center" variant="h2" gutterBottom>Level : {level}</Typography>
+                            <Divider style={{ margin: '20px 0' }} />
+                            <div className={`feedback ${feedbackMessage[0].toLowerCase()}`}>
+                                <h2 className="feedback-text">{feedbackMessage}</h2>
+                            </div>
+                            <Form block={block} returnGuessToApp={value => this.updateAppState(value)} />
+                            <Progress feedbackMessage={feedbackMessage} attempt={attempt} guessList={guessList} />
+                            <Info show={show} onClose={this.handleClose} />
+                        </Paper>
+                    </Grid>
                 </Grid>
-            </Grid>
-        );
+            );
+        } else {
+            return (
+                <Grid style={{ height: '100vh' }} justify="center" alignItems="center" container>
+                    <Grid item xs={3}>
+                        <Paper style={{ padding: '50px' }} elevation={6}>
+                            <Typography align="center" variant="h2" gutterBottom>Level : {level}</Typography>
+                            <Divider style={{ margin: '20px 0' }} />
+                            <div className={`feedback ${feedbackMessage[0].toLowerCase()}`}>
+                                <h2 className="feedback-text">{feedbackMessage}</h2>
+                            </div>
+                            <Form block={block} returnGuessToApp={value => this.updateAppState(value)} />
+                            <Progress feedbackMessage={feedbackMessage} attempt={attempt} guessList={guessList} />
+                            <div>{previousList}</div>
+                            <Info show={show} onClose={this.handleClose} />
+                        </Paper>
+                    </Grid>
+                </Grid>
+            );
+        }
     }
 }
-
 export default App;
