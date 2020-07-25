@@ -65,12 +65,14 @@ h1 {
 }
 .header__title {
     margin: auto;
+    text-decoration: none;
     width: 50%;
-    border: 3px black;
+    border: 3px solid white;
     padding: 10px;
     text-align: center;
-    color:#a5afd7;
-    font-size: 1.6rem;
+    color:white;
+    font-size: 89px;
     display: flex;
     justify-content: center
+
 }
