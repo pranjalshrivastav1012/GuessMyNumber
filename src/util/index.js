@@ -6,7 +6,7 @@ export const getInitialState = () => ({
     allGuesses: [],
     attempt: 0,
     feedbackMessage: 'Dare to guess...',
-    feedbackColor: '#434343',
+
     block: false,
 });
 
@@ -17,6 +17,7 @@ export const getFeedback = (absDiff) => {
     if (absDiff === 0) {
         feedbackColor = '#7BFC1E';
         feedbackMessage = 'Correct!';
+
     } else if (absDiff <= 4 && absDiff >= 1) {
         feedbackColor = '#F50727';
         feedbackMessage = 'Hot!!';
